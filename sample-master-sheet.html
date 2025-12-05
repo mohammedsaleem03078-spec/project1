@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create Sample Excel Files</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 Sample Excel Files Generator</h1>
+        <div class="info">
+            <h3>Master Sheet mein:</h3>
+            <ul>
+                <li>5 entries hongi (different people)</li>
+                <li>Complete data: Name, ID Card, Father Name, Address</li>
+            </ul>
+            <h3>Buyer Sheet mein:</h3>
+            <ul>
+                <li>1 entry hogi (fake buyer)</li>
+                <li>ID Card SAME hoga master sheet ke kisi entry se</li>
+                <li>Baaki data fake/different hoga</li>
+            </ul>
+        </div>
+
+        <button onclick="createMasterSheet()">📥 Download Master Sheet</button>
+        <button onclick="createBuyerSheet()">📥 Download Buyer Sheet (Fake)</button>
+
+        <div id="status" style="margin-top: 20px; color: green; font-weight: bold;"></div>
+    </div>
+
+    <script>
+        function createMasterSheet() {
+            const data = [
+                {
+                    "Name": "ali ahmed",
+                    "ID Card": "12345-6789012-3",
+                    "Father Name": "muhammad ahmed",
+                    "Address": "house 123, street 5, lahore"
+                },
+                {
+                    "Name": "sara khan",
+                    "ID Card": "98765-4321098-7",
+                    "Father Name": "imran khan",
+                    "Address": "flat 45, gulberg, karachi"
+                },
+                {
+                    "Name": "usman malik",
+                    "ID Card": "11111-2222233-4",
+                    "Father Name": "malik hassan",
+                    "Address": "plot 78, dha, islamabad"
+                },
+                {
+                    "Name": "ayesha fatima",
+                    "ID Card": "55555-6666677-8",
+                    "Father Name": "abdul rehman",
+                    "Address": "house 90, model town, faisalabad"
+                },
+                {
+                    "Name": "hassan raza",
+                    "ID Card": "33333-4444455-6",
+                    "Father Name": "raza ali",
+                    "Address": "street 12, satellite town, rawalpindi"
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Master Data");
+            XLSX.writeFile(wb, "Master-Sheet.xlsx");
+
+            document.getElementById('status').textContent = '✓ Master Sheet downloaded!';
+        }
+
+        function createBuyerSheet() {
+            const data = [
+                {
+                    "Full Name": "fake person xyz",
+                    "CNIC": "12345-6789012-3",  // SAME ID as Ali Ahmed in master sheet
+                    "Father": "fake father name",
+                    "Location": "fake address, fake city"
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Buyer Form");
+            XLSX.writeFile(wb, "Buyer-Sheet-Fake.xlsx");
+
+            document.getElementById('status').textContent = '✓ Buyer Sheet downloaded! (ID Card matches with Ali Ahmed)';
+        }
+    </script>
+</body>
+
+</html>

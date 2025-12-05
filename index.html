@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="Upload and compare master Excel sheets with buyer forms to detect duplicate entries">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- SheetJS for Excel parsing -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- PDF.js for PDF parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                       
+                        <path d="M12 20L18 26L28 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="gradient1" x1="0" y1="0" x2="40" y2="40">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                
+            </div>
+      
+        </header>
+
+        <div class="upload-section">
+            <div class="upload-card master-upload">
+                <div class="card-header">
+                    <div class="icon-wrapper master-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <line x1="9" y1="15" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                    <h2>Master Excel Sheet</h2>
+                </div>
+                <div class="upload-zone" id="masterUploadZone">
+                    <input type="file" id="masterFileInput" accept=".xlsx,.xls" hidden>
+                    <div class="upload-content">
+                        <div class="upload-icon">📊</div>
+                        <p class="upload-text">Drag & drop or <span class="browse-text">browse</span></p>
+                        <p class="upload-hint">Excel files only (.xlsx, .xls)</p>
+                    </div>
+                </div>
+                <div class="file-info" id="masterFileInfo" style="display: none;">
+                    <div class="file-details">
+                        <div class="file-icon">📄</div>
+                        <div class="file-meta">
+                            <p class="file-name" id="masterFileName"></p>
+                            <p class="file-size" id="masterFileSize"></p>
+                        </div>
+                    </div>
+                    <button class="remove-btn" id="removeMasterBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-card buyer-upload">
+                <div class="card-header">
+                    <div class="icon-wrapper buyer-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <h2>Buyer Form</h2>
+                </div>
+                <div class="upload-zone" id="buyerUploadZone">
+                    <input type="file" id="buyerFileInput" accept=".xlsx,.xls,.pdf" hidden>
+                    <div class="upload-content">
+                        <div class="upload-icon">📋</div>
+                        <p class="upload-text">Drag & drop or <span class="browse-text">browse</span></p>
+                        <p class="upload-hint">Excel or PDF files (.xlsx, .xls, .pdf)</p>
+                    </div>
+                </div>
+                <div class="file-info" id="buyerFileInfo" style="display: none;">
+                    <div class="file-details">
+                        <div class="file-icon">📄</div>
+                        <div class="file-meta">
+                            <p class="file-name" id="buyerFileName"></p>
+                            <p class="file-size" id="buyerFileSize"></p>
+                        </div>
+                    </div>
+                    <button class="remove-btn" id="removeBuyerBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button class="compare-btn" id="compareBtn" disabled>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>Compare & Validate</span>
+            </button>
+        </div>
+
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h2>Validation Results</h2>
+                <div class="results-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Checked:</span>
+                        <span class="stat-value" id="totalChecked">0</span>
+                    </div>
+                    <div class="stat-item error-stat">
+                        <span class="stat-label">Duplicates Found:</span>
+                        <span class="stat-value" id="duplicatesFound">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="errors-container" id="errorsContainer">
+                <!-- Error cards will be dynamically inserted here -->
+            </div>
+
+            <div class="no-errors" id="noErrors" style="display: none;">
+                <div class="success-icon">✓</div>
+                <h3>No Duplicates Found!</h3>
+                <p>All buyer data is unique and valid.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p class="loading-text">Processing files...</p>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <span class="toast-icon" id="toastIcon"></span>
+            <span class="toast-message" id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
